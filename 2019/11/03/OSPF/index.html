@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>华为设备OSPF路由的配置 | 辣鸡熊个人博客</title>
+  <meta name="description" content="实验中有很多个人的理解，因为基础较差，难免会有一些错误的地方，如果您有建议或理解，欢迎在文章下方留言😁 文章较长，下方浮动栏有文章目录按钮哟😃 OSPFOpen Shortest Path First翻译过来是开放式最短路径优先 华为设备中OSPF的优先级是 10 仅低于直连路由 OSPF单区域配置实验设备HUAWEI AR2220   PC 实验拓扑&amp;amp;规划我并没有使用实验指导中提供的">
+<meta name="keywords" content="课程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="华为设备OSPF路由的配置">
+<meta property="og:url" content="https:&#x2F;&#x2F;eeeje.com&#x2F;2019&#x2F;11&#x2F;03&#x2F;OSPF&#x2F;index.html">
+<meta property="og:site_name" content="辣鸡熊个人博客">
+<meta property="og:description" content="实验中有很多个人的理解，因为基础较差，难免会有一些错误的地方，如果您有建议或理解，欢迎在文章下方留言😁 文章较长，下方浮动栏有文章目录按钮哟😃 OSPFOpen Shortest Path First翻译过来是开放式最短路径优先 华为设备中OSPF的优先级是 10 仅低于直连路由 OSPF单区域配置实验设备HUAWEI AR2220   PC 实验拓扑&amp;amp;规划我并没有使用实验指导中提供的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-2&#x2F;Snipaste_2019-11-02_16-23-38.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-2&#x2F;Snipaste_2019-11-02_19-55-51.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-2&#x2F;Snipaste_2019-11-02_19-57-13.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-2&#x2F;Snipaste_2019-11-02_19-59-47.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-2&#x2F;Snipaste_2019-11-02_23-42-00.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-2&#x2F;Snipaste_2019-11-03_00-47-57.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-2&#x2F;Snipaste_2019-11-03_01-00-31.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-2&#x2F;Snipaste_2019-11-03_01-06-42.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-3&#x2F;Snipaste_2019-11-03_10-30-02.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-3&#x2F;Snipaste_2019-11-03_11-33-35.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-3&#x2F;Snipaste_2019-11-03_14-15-00.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-3&#x2F;Snipaste_2019-11-03_15-05-49.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-3&#x2F;Snipaste_2019-11-03_15-46-07.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-3&#x2F;Snipaste_2019-11-03_16-11-32.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-3&#x2F;Snipaste_2019-11-03_17-19-32.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-3&#x2F;Snipaste_2019-11-03_17-42-31.jpg">
+<meta property="og:updated_time" content="2019-11-18T11:16:12.879Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-2&#x2F;Snipaste_2019-11-02_16-23-38.jpg">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://eeeje.com/2019/11/03/OSPF/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="辣鸡熊个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://eeeje.com" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">辣鸡熊</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> HangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/lajix" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/lajix" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/bearshili" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://oss.sadly.pw/images/wechat.jpg" target="_blank" title="Wechat" data-toggle=tooltip data-placement=top><i class="icon icon-wechat"></i></a></li>
+        
+        <li><a href="/mailto:admin@eeeji.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>博客正在尽力优化!!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B4%AD%E7%89%A9/">购物</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag">学习</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BE%E7%A8%8B/" rel="tag">课程</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AD%E7%89%A9/" rel="tag">购物</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/linux/" style="font-size: 13.5px;">linux</a> <a href="/tags/%E5%AD%A6%E4%B9%A0/" style="font-size: 13.5px;">学习</a> <a href="/tags/%E8%AF%BE%E7%A8%8B/" style="font-size: 14px;">课程</a> <a href="/tags/%E8%B4%AD%E7%89%A9/" style="font-size: 13px;">购物</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/ICMP/" class="title">ICMP</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T11:16:12.754Z" itemprop="datePublished">2019-11-18</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/09/ARP/" class="title">ARP学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-08T17:09:07.000Z" itemprop="datePublished">2019-11-09</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/05/11.5/" class="title">11.5笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-05T11:05:44.000Z" itemprop="datePublished">2019-11-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/03/1103/" class="title">1103 OSPF笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-03T11:05:44.000Z" itemprop="datePublished">2019-11-03</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/03/OSPF/" class="title">华为设备OSPF路由的配置</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-02T17:44:10.000Z" itemprop="datePublished">2019-11-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OSPF"><span class="toc-number">1.</span> <span class="toc-text">OSPF</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSPF单区域配置"><span class="toc-number">2.</span> <span class="toc-text">OSPF单区域配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实验设备"><span class="toc-number">2.1.</span> <span class="toc-text">实验设备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验拓扑-amp-规划"><span class="toc-number">2.2.</span> <span class="toc-text">实验拓扑&amp;规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验目的"><span class="toc-number">2.3.</span> <span class="toc-text">实验目的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验过程"><span class="toc-number">2.4.</span> <span class="toc-text">实验过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验验证"><span class="toc-number">2.5.</span> <span class="toc-text">实验验证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSPF多区域配置"><span class="toc-number">3.</span> <span class="toc-text">OSPF多区域配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实验拓扑-amp-规划-1"><span class="toc-number">3.1.</span> <span class="toc-text">实验拓扑&amp;规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验目的-1"><span class="toc-number">3.2.</span> <span class="toc-text">实验目的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验过程-1"><span class="toc-number">3.3.</span> <span class="toc-text">实验过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验验证-1"><span class="toc-number">3.4.</span> <span class="toc-text">实验验证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OSPF的认证"><span class="toc-number">4.</span> <span class="toc-text">OSPF的认证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实验拓扑-规划"><span class="toc-number">4.1.</span> <span class="toc-text">实验拓扑/规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验目的-2"><span class="toc-number">4.2.</span> <span class="toc-text">实验目的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验过程-2"><span class="toc-number">4.3.</span> <span class="toc-text">实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#OSPF区域认证"><span class="toc-number">4.3.1.</span> <span class="toc-text">OSPF区域认证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OSPF链路验证"><span class="toc-number">4.3.2.</span> <span class="toc-text">OSPF链路验证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OSPF被动接口配置"><span class="toc-number">4.3.3.</span> <span class="toc-text">OSPF被动接口配置</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#拓扑-amp-规划"><span class="toc-number">4.3.3.1.</span> <span class="toc-text">拓扑&amp;规划</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#实验过程-3"><span class="toc-number">4.3.3.2.</span> <span class="toc-text">实验过程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#实验结论"><span class="toc-number">4.3.3.3.</span> <span class="toc-text">实验结论</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OSPF的Router-ID"><span class="toc-number">4.3.4.</span> <span class="toc-text">OSPF的Router-ID</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DR与BDR"><span class="toc-number">5.</span> <span class="toc-text">DR与BDR</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-OSPF" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      华为设备OSPF路由的配置
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/11/03/OSPF/" class="article-date">
+	  <time datetime="2019-11-02T17:44:10.000Z" itemprop="datePublished">2019-11-03</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/%E8%AF%BE%E7%A8%8B/" rel="tag">课程</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/11/03/OSPF/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 5.4k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 27(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p><strong>实验中有很多个人的理解，因为基础较差，难免会有一些错误的地方，如果您有建议或理解，欢迎在文章下方留言😁</strong></p>
+<p><strong>文章较长，下方浮动栏有文章目录按钮哟😃</strong></p>
+<h2 id="OSPF"><a href="#OSPF" class="headerlink" title="OSPF"></a>OSPF</h2><p>Open Shortest Path First翻译过来是开放式最短路径优先</p>
+<p>华为设备中OSPF的优先级是 10 仅低于直连路由</p>
+<h2 id="OSPF单区域配置"><a href="#OSPF单区域配置" class="headerlink" title="OSPF单区域配置"></a>OSPF单区域配置</h2><h3 id="实验设备"><a href="#实验设备" class="headerlink" title="实验设备"></a>实验设备</h3><p>HUAWEI AR2220   PC</p>
+<h3 id="实验拓扑-amp-规划"><a href="#实验拓扑-amp-规划" class="headerlink" title="实验拓扑&amp;规划"></a>实验拓扑&amp;规划</h3><p>我并没有使用实验指导中提供的IP规划</p>
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-2/Snipaste_2019-11-02_16-23-38.jpg" alt=""></p>
+<h3 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h3><p>通过配置单个OSPF区域的配置，使PC1、PC2、PC2所在网络互通</p>
+<h3 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h3><ol>
+<li><p>为各接口以及PC配置IP，并确保每一对接口之间连通。</p>
+</li>
+<li><p>为路由器配置OSPF</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[R1]ospf 1     //1为进程号</span><br></pre></td></tr></table></figure>
+
+<p>进入骨干区域</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[R1-ospf-1]area 0</span><br></pre></td></tr></table></figure>
+
+<p>接下来就可以来指定运行OSPF协议的接口和接口所属的区域</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[R1-ospf-1-area-0.0.0.0]network 172.10.1.0 0.0.0.255</span><br><span class="line">[R1-ospf-1-area-0.0.0.0]network 10.0.0.0 0.0.0.3</span><br><span class="line">[R1-ospf-1-area-0.0.0.0]network 10.0.0.4 0.0.0.3</span><br></pre></td></tr></table></figure>
+
+<p>Q：这里的命令我不太理解<br><strong>猜测</strong>后面的应该为255减去原来的掩码位（数通基础不好）</p>
+<ol start="3">
+<li>检查通告情况，命令：<code>display ospf interface</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">  OSPF Process 1 with Router ID 172.10.1.254</span><br><span class="line">	    Interfaces </span><br><span class="line"></span><br><span class="line">Area: 0.0.0.0     (MPLS TE not enabled)</span><br><span class="line">IP Address    Type      tate  Cost Pri      DR           BDR </span><br><span class="line">172.10.1.254  Broadcast  DR    1    1  172.10.1.254    0.0.0.0</span><br><span class="line">10.0.0.2      Broadcast  DR    1    1    10.0.0.2      0.0.0.0</span><br><span class="line">10.0.0.6      Broadcast  DR    1    1    10.0.0.6      0.0.0.0</span><br></pre></td></tr></table></figure>
+
+<p>这里可以看到area域为0.0.0.0，RoutID为172.10.1.254 ，另外可以看待通告出去三个接口的类型为广播，接口状态为DR，即都是所在网络中的指定路由器。<br><em>拓展：DR ：一个广播性、多接入网络中的指定路由器，个人理解为一个网络中的“管事的”</em><br>Q：为什么会选这个ip做为RoutID？</p>
+<ol start="4">
+<li><p>配置R2 R3</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[R2]ospf 1</span><br><span class="line">[R2-ospf-1]area 0</span><br><span class="line">[R2-ospf-1-area-0.0.0.0]network 10.0.0.1 0.0.0.3</span><br><span class="line">[R2-ospf-1-area-0.0.0.0]network 10.0.0.9 0.0.0.3</span><br><span class="line">[R2-ospf-1-area-0.0.0.0]network 172.10.2.254 0.0.0.255</span><br><span class="line"></span><br><span class="line">[R3]ospf 1</span><br><span class="line">[R3-ospf-1]area 0</span><br><span class="line">[R3-ospf-1-area-0.0.0.0]network 10.0.0.5 0.0.0.3</span><br><span class="line">[R3-ospf-1-area-0.0.0.0]network 10.0.0.10 0.0.0.3</span><br><span class="line">[R3-ospf-1-area-0.0.0.0]network 172.10.3.1 0.0.0.255</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<p><strong>这里我配置完以后发现，命令敲错了，network 后面的直接输了接口地址，但是我去查通告情况，看起来是正常的，我觉得，后面的那个字段和掩码有关，掩码是用来定义网络的，所以说我输入的32位的地址被定义为了当前ip所在的网络，暂且不去管他。</strong></p>
+<ol start="5">
+<li>检查OSPF邻居<code>display ospf peer</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">OSPF Process 1 with Router ID 172.10.1.254</span><br><span class="line"> Neighbors</span><br><span class="line"></span><br><span class="line">Area 0.0.0.0 interface 10.0.0.2(GigabitEthernet0/0/0)&apos;s neighbors</span><br><span class="line">Router ID: 172.10.2.254     Address: 10.0.0.1        </span><br><span class="line">  State: Full  Mode:Nbr is  Master  Priority: 1</span><br><span class="line">  DR: 10.0.0.2  BDR: 10.0.0.1  MTU: 0    </span><br><span class="line">  Dead timer due in 39  sec </span><br><span class="line">  Retrans timer interval: 5 </span><br><span class="line">  Neighbor is up for 00:35:24     </span><br><span class="line">  Authentication Sequence: [ 0 ] </span><br><span class="line"></span><br><span class="line">   	 Neighbors </span><br><span class="line"></span><br><span class="line">Area 0.0.0.0 interface 10.0.0.6(GigabitEthernet0/0/2)&apos;s neighbors</span><br><span class="line">Router ID: 10.0.0.10        Address: 10.0.0.5        </span><br><span class="line">  State: Full  Mode:Nbr is  Slave  Priority: 1</span><br><span class="line">  DR: 10.0.0.6  BDR: 10.0.0.5  MTU: 0    </span><br><span class="line">  Dead timer due in 29  sec </span><br><span class="line">  Retrans timer interval: 5 </span><br><span class="line">  Neighbor is up for 00:28:32     </span><br><span class="line">  Authentication Sequence: [ 0 ]</span><br></pre></td></tr></table></figure>
+
+<p>这里看到了两个OSPF邻居RoutID分别为：172.10.1.254，10.0.0.10（这个RoutID用了路由之间的接口ID）</p>
+<p><em>猜测：RoutID的原则是不重复，所以说是不是随便指定一个ip做为RoutID</em><br><em>实验：我新开了一台路由器去尝试，发现 RoutID的选择是根据第一个配置的接口ip进行选择的。我回头去看R3的数据，我第一个配置的接口Ip的确是1.0.0.10/30</em></p>
+<ul>
+<li>现在再去查通告情况，看一下前面看不懂的<code>DR</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> OSPF Process 1 with Router ID 172.10.1.254</span><br><span class="line">   	 Interfaces </span><br><span class="line"></span><br><span class="line">Area: 0.0.0.0    (MPLS TE not enabled)</span><br><span class="line">IP Address    Type       State  Cost  Pri    DR            BDR </span><br><span class="line">172.10.1.254  Broadcast   DR     1     1   172.10.1.254  0.0.0.0</span><br><span class="line">10.0.0.2      Broadcast   DR     1     1   10.0.0.2      10.0.0.1</span><br><span class="line">10.0.0.6      Broadcast   DR     1     1   10.0.0.6      10.0.0.5</span><br></pre></td></tr></table></figure>
+
+<p>DR是指定路由器，BDR是备份指定路由器，既然前面说到了DR是<code>管事的</code>那BDR就是<code>副管事的</code>，当<code>管事的</code>不在或者做错的时候，<code>副管事的</code>就出来接手，这两个<code>管事的</code>又是由大家选出来的，这里就涉及到OSPF的选举机制了，由于理论部分还没有学到这里，暂时放一下。</p>
+<p>现在从表中看出，172.1.1.254是自己所在网络的DR，他的BDR是一个缺省状态，另外两个网络的BDR都是自己网络中存在于OSPF域中的地址</p>
+<ol start="6">
+<li>再看看OSPF的路由表</li>
+</ol>
+<pre><code>Public routing table : OSPF
+     Destinations : 3        Routes : 4        
+
+OSPF routing table status : &lt;Active&gt;
+     Destinations : 3        Routes : 4
+
+Destination/Mask Proto Pre Cost Flags NextHop    Interface
+
+   10.0.0.8/30   OSPF  10   2     D   10.0.0.1 GigabitEthernet 0/0/0
+                 OSPF  10   2     D   10.0.0.5 GigabitEthernet 0/0/2
+ 172.10.2.0/24   OSPF  10   2     D   10.0.0.1 GigabitEthernet 0/0/0
+ 172.10.3.0/24   OSPF  10   2     D   10.0.0.5 GigabitEthernet 0/0/2
+
+OSPF routing table status : &lt;Inactive&gt;
+     Destinations : 0        Routes : 0</code></pre><h3 id="实验验证"><a href="#实验验证" class="headerlink" title="实验验证"></a>实验验证</h3><ul>
+<li>由<code>PC1</code>ping <code>PC2</code></li>
+</ul>
+<pre><code>PC&gt;ping 172.10.2.1
+
+Ping 172.10.2.1: 32 data bytes, Press Ctrl_C to break
+Request timeout!
+From 172.10.2.1: bytes=32 seq=2 ttl=126 time=16 ms
+From 172.10.2.1: bytes=32 seq=3 ttl=126 time=15 ms
+From 172.10.2.1: bytes=32 seq=4 ttl=126 time=16 ms
+From 172.10.2.1: bytes=32 seq=5 ttl=126 time=16 ms
+
+--- 172.10.2.1 ping statistics ---
+  5 packet(s) transmitted
+  4 packet(s) received
+  20.00% packet loss
+  round-trip min/avg/max = 0/15/16 ms</code></pre><p>单区域的实验结束</p>
+<h2 id="OSPF多区域配置"><a href="#OSPF多区域配置" class="headerlink" title="OSPF多区域配置"></a>OSPF多区域配置</h2><p>在网络规模很大的时候，就要分为多个自治域去管理，否则每个路由上的链路状态数据库将会非常的巨大，这就考虑到了路由器的硬件因素，打个简单的比方，大家都知道π=3.141592653…但是这个值不需要我们每次使用的时候都拿去算，因为已经有人算好了，拿来用就好了，多区域就是不同as域的计算、选举，都是独立的，由边界路由提供区域间的联系。</p>
+<p>关于链路数据库大小的概念，这里拿一台来自俄勒冈大学全球BGP路由表浏览项目的路由器打个比方（好像关系不大🤔）<br>这是一台思科的设备，使用的BGP路由<br><img src="https://oss.sadly.pw/images/R-S/2019-11-2/Snipaste_2019-11-02_19-55-51.jpg" alt=""><br>他的路由表是一个很庞大的数量<br><img src="https://oss.sadly.pw/images/R-S/2019-11-2/Snipaste_2019-11-02_19-57-13.jpg" alt=""><br>使用的内存也达到了8.5G左右</p>
+<p>而我们实验中用到的AR2220的内存仅有1G<br><img src="https://oss.sadly.pw/images/R-S/2019-11-2/Snipaste_2019-11-02_19-59-47.jpg" alt=""><br><em>好像ospf多域解决的是计算等问题，而且ospf和bgp的机制也有很大不同😓，上面这部分就当个拓展，另外在百度的时候发现了一段有意思的话：</em></p>
+<blockquote>
+<p><em>OSPF：“身如路由器，心似转发表，报文何其多，日夜勤查找。”</em><br><em>BGP：“路由本非器，转发何需表？报文虽然多，自有他人找。”</em></p>
+</blockquote>
+<p><em>先收藏起来</em></p>
+<p>言归正传</p>
+<h3 id="实验拓扑-amp-规划-1"><a href="#实验拓扑-amp-规划-1" class="headerlink" title="实验拓扑&amp;规划"></a>实验拓扑&amp;规划</h3><p>基于上一部分是实验进行改动<br><img src="https://oss.sadly.pw/images/R-S/2019-11-2/Snipaste_2019-11-02_23-42-00.jpg" alt=""><br>其中R1 R2 R3 R4 在区域 0 中，R1 R2 R5在区域 1 中，R3 R4 R6 在区域 2 中</p>
+<h3 id="实验目的-1"><a href="#实验目的-1" class="headerlink" title="实验目的"></a>实验目的</h3><p>R1 R2 R3 R4 为核心区域，在同一个as域中，其中R1 R2 与 R5 同在区域 1 中，R3 R4 与 R5 同在区域 2 中<br><em>从本质上来讲，可以理解为“分布式计算”，区域1计算出a=1，区域2计算出b=2，区域3计算出c=3,甲在区域1和2中，乙在区域2和3中，甲和乙互相沟通后，大家都知道a,b,c的值了。</em></p>
+<h3 id="实验过程-1"><a href="#实验过程-1" class="headerlink" title="实验过程"></a>实验过程</h3><ol>
+<li><p>配置各接口IP</p>
+</li>
+<li><p>配置骨干区域，将R1 R2 R3 R4 配入area 0 中，并互相通告</p>
+</li>
+</ol>
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-2/Snipaste_2019-11-03_00-47-57.jpg" alt=""></p>
+<ol start="3">
+<li>配置区域A 即R1 R2 R5 配入 area 1 中，其中R1 R2只通告与R5相连的接口</li>
+</ol>
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-2/Snipaste_2019-11-03_01-00-31.jpg" alt=""></p>
+<ol start="4">
+<li>配置区域B 即R3 R4 R6 配入 area 2 中，其中R3 R4只通告与R6相连的接口</li>
+</ol>
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-2/Snipaste_2019-11-03_01-06-42.jpg" alt=""></p>
+<p>邻区没有问题</p>
+<ul>
+<li>查一下OSPF链路状态数据库</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]display ospf lsdb</span><br><span class="line"></span><br><span class="line">OSPF Process 1 with Router ID 10.0.0.18</span><br><span class="line">  Link State Database </span><br><span class="line">	        Area: 0.0.0.2</span><br><span class="line"> Type   LinkState ID  AdvRouter      Age  Len Sequence Metric</span><br><span class="line">Router  10.0.0.14     10.0.0.14      411  36  80000005   1</span><br><span class="line">Router  172.10.3.254  172.10.3.254   421  36  80000005   1</span><br><span class="line">Router  10.0.0.18     10.0.0.18      409  60  80000008   1</span><br><span class="line">Network 10.0.0.17     10.0.0.14      411  32  80000002   0</span><br><span class="line">Network 10.0.0.22     172.10.3.254   421  32  80000002   0</span><br><span class="line">Sum-Net 172.10.3.0    172.10.3.254   615  28  80000001   1</span><br><span class="line">Sum-Net 172.10.3.0    10.0.0.14      560  28  80000001   2</span><br><span class="line">Sum-Net 172.10.2.0    172.10.3.254   615  28  80000001   2</span><br><span class="line">Sum-Net 172.10.2.0    10.0.0.14      560  28  80000001   3</span><br><span class="line">Sum-Net 172.10.1.0    172.10.3.254   615  28  80000001   3</span><br><span class="line">Sum-Net 172.10.1.0    10.0.0.14      560  28  80000001   3</span><br><span class="line">Sum-Net 10.0.0.12     172.10.3.254   615  28  80000001   2</span><br><span class="line">Sum-Net 10.0.0.12     10.0.0.14      560  28  80000001   1</span><br><span class="line">Sum-Net 10.0.0.8      172.10.3.254   615  28  80000001   1</span><br><span class="line">Sum-Net 10.0.0.8      10.0.0.14      560  28  80000001   2</span><br><span class="line">Sum-Net 10.0.0.4      172.10.3.254   615  28  80000001   1</span><br><span class="line">Sum-Net 10.0.0.4      10.0.0.14      560  28  80000001   1</span><br><span class="line">Sum-Net 10.0.0.0      172.10.3.254   615  28  80000001   2</span><br><span class="line">Sum-Net 10.0.0.0      10.0.0.14      560  28  80000001   2</span><br><span class="line">Sum-Net 10.0.0.28     172.10.3.254   615  28  80000001   2</span><br><span class="line">Sum-Net 10.0.0.28     10.0.0.14      560  28  80000001   3</span><br><span class="line">Sum-Net 10.0.0.24     172.10.3.254   615  28  80000001   3</span><br><span class="line">Sum-Net 10.0.0.24     10.0.0.14      560  28  80000001   2</span><br></pre></td></tr></table></figure>
+
+<p>除了我们通告的路由之外，其他的路由都是Sum-Net类型的<br><em>我去搜Sum-Net是什么，并没有搜到，但是发现启示录中有一条Sum-Net LSA会引起路由计算，引发OSPF路由震荡</em></p>
+<h3 id="实验验证-1"><a href="#实验验证-1" class="headerlink" title="实验验证"></a>实验验证</h3><p><code>PC1</code> ping <code>PC4</code></p>
+<pre><code>PC&gt;ping 172.10.4.1
+
+Ping 172.10.4.1: 32 data bytes, Press Ctrl_C to break
+From 172.10.1.1: Destination host unreachable</code></pre><p>失败</p>
+<ul>
+<li><p>排障</p>
+<p>先用PC1与PC4 ping各自的网关  –成功<br>查看R5 R6路由表                          –有对应条目<br>检查电脑配置                                –未配置网关</p>
+</li>
+</ul>
+<pre><code>PC&gt;ping 172.10.4.1
+
+Ping 172.10.4.1: 32 data bytes, Press Ctrl_C to break
+Request timeout!
+From 172.10.4.1: bytes=32 seq=2 ttl=124 time=31 ms
+From 172.10.4.1: bytes=32 seq=3 ttl=124 time=31 ms
+From 172.10.4.1: bytes=32 seq=4 ttl=124 time=31 ms
+From 172.10.4.1: bytes=32 seq=5 ttl=124 time=32 ms
+
+--- 172.10.4.1 ping statistics ---
+  5 packet(s) transmitted
+  4 packet(s) received
+  20.00% packet loss
+  round-trip min/avg/max = 0/31/32 ms</code></pre><p>实验完成</p>
+<h2 id="OSPF的认证"><a href="#OSPF的认证" class="headerlink" title="OSPF的认证"></a>OSPF的认证</h2><p>“对暗号” 我理解为防止非法路由加入网络中</p>
+<h3 id="实验拓扑-规划"><a href="#实验拓扑-规划" class="headerlink" title="实验拓扑/规划"></a>实验拓扑/规划</h3><p><img src="https://oss.sadly.pw/images/R-S/2019-11-3/Snipaste_2019-11-03_10-30-02.jpg" alt=""></p>
+<p>R1的loopback的地址是1.1.1.1 ，R2的是2.2.2.2，以此类推</p>
+<h3 id="实验目的-2"><a href="#实验目的-2" class="headerlink" title="实验目的"></a>实验目的</h3><p>在区域0和1配上区域认证，0开启密文认证，1开启明文认证</p>
+<h3 id="实验过程-2"><a href="#实验过程-2" class="headerlink" title="实验过程"></a>实验过程</h3><h4 id="OSPF区域认证"><a href="#OSPF区域认证" class="headerlink" title="OSPF区域认证"></a>OSPF区域认证</h4><ol>
+<li><p>配置各接口IP，并配置loopback地址</p>
+</li>
+<li><p>将R2 R3 R5 R6 配入area 0 中，并通告网络，将R1 R2 R4 配入area 1 中，同样通告网络</p>
+<p>需要注意的是，每台设备都需要把loopback地址通告出去</p>
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-3/Snipaste_2019-11-03_11-33-35.jpg" alt=""></p>
+</li>
+<li><p>配置区域</p>
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-3/Snipaste_2019-11-03_14-15-00.jpg" alt=""></p>
+<p>可以看到R2有了正确的邻居关系</p>
+</li>
+<li><p>给区域1配置区域认证</p>
+<p>R1</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]ospf 1</span><br><span class="line">[Huawei-ospf-1]ar	</span><br><span class="line">[Huawei-ospf-1]area 1</span><br><span class="line">[Huawei-ospf-1-area-0.0.0.1]au	</span><br><span class="line">[Huawei-ospf-1-area-0.0.0.1]authentication-mode s	</span><br><span class="line">[Huawei-ospf-1-area-0.0.0.1]authentication-mode simple p	</span><br><span class="line">[Huawei-ospf-1-area-0.0.0.1]authentication-mode simple plain huawei1</span><br><span class="line">[Huawei-ospf-1-area-0.0.0.1]disp	</span><br><span class="line">[Huawei-ospf-1-area-0.0.0.1]display th</span><br><span class="line">[V200R003C00]</span><br><span class="line">#</span><br><span class="line"> area 0.0.0.1 </span><br><span class="line">  authentication-mode simple plain huawei1 </span><br><span class="line">  network 1.1.1.1 0.0.0.0 </span><br><span class="line">  network 10.0.0.0 0.0.0.3 </span><br><span class="line">#</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
+
+<p><em>这时候可以看到口令为<code>huawei1</code></em></p>
+</li>
+</ol>
+<p>重新配置一遍</p>
+<p><em>发现个有趣的东西，按上键的时候，原来输入的口令会变成<code>******</code></em></p>
+<p>现在口令变为了密文显示</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[Huawei-ospf-1-area-0.0.0.1]authentication-mode simple huawei1</span><br><span class="line">[Huawei-ospf-1-area-0.0.0.1]display th</span><br><span class="line">[V200R003C00]</span><br><span class="line">#</span><br><span class="line"> area 0.0.0.1 </span><br><span class="line">  authentication-mode simple cipher %$%$6iLJ4J=YgV@LW7RZhQgXRp_4%$%$ </span><br><span class="line">  network 1.1.1.1 0.0.0.0 </span><br><span class="line">  network 10.0.0.0 0.0.0.3 </span><br><span class="line">#</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
+
+
+
+<p>R2也没有了R1的邻居关系</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;R2&gt;display ospf 1 peer brief </span><br><span class="line"></span><br><span class="line">	 OSPF Process 1 with Router ID 10.0.0.2</span><br><span class="line">		  Peer Statistic Information</span><br><span class="line"> ----------------------------------------------------------------------------</span><br><span class="line"> Area Id          Interface                        Neighbor id      State    </span><br><span class="line"> 0.0.0.0          GigabitEthernet0/0/1             10.0.0.6         Full        </span><br><span class="line"> 0.0.0.1          GigabitEthernet0/0/2             4.4.4.4          Full        </span><br><span class="line"> ----------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="5">
+<li>接下来配R2 R4的认证</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[R2]ospf 1</span><br><span class="line">[R2-ospf-1]area 1	</span><br><span class="line">[R2-ospf-1-area-0.0.0.1]au	</span><br><span class="line">[R2-ospf-1-area-0.0.0.1]authentication-mode s	</span><br><span class="line">[R2-ospf-1-area-0.0.0.1]authentication-mode simple p	</span><br><span class="line">[R2-ospf-1-area-0.0.0.1]authentication-mode simple plain huawei1</span><br><span class="line">[R2-ospf-1-area-0.0.0.1]authentication-mode simple huawei1</span><br><span class="line">[R2-ospf-1-area-0.0.0.1]display ospf 1 peer brief </span><br><span class="line"></span><br><span class="line">	 OSPF Process 1 with Router ID 10.0.0.2</span><br><span class="line">		  Peer Statistic Information</span><br><span class="line"> ----------------------------------------------------------------------------</span><br><span class="line"> Area Id          Interface                        Neighbor id      State    </span><br><span class="line"> 0.0.0.0          GigabitEthernet0/0/1             10.0.0.6         Full        </span><br><span class="line"> 0.0.0.1          GigabitEthernet0/0/0             10.0.0.1         Full        </span><br><span class="line"> ----------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<p>可以看到现在R2与R1的邻居关系恢复了，没有了R4的邻居，接着去配R4</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[R4-ospf-1-area-0.0.0.1]display th</span><br><span class="line">[V200R003C00]</span><br><span class="line">#</span><br><span class="line"> area 0.0.0.1 </span><br><span class="line">  authentication-mode simple cipher %$%$tuiTSpt&apos;-/`8ey(B&#125;PlFR&amp;~y%$%$ </span><br><span class="line">  network 4.4.4.4 0.0.0.0 </span><br><span class="line">  network 10.0.0.16 0.0.0.3 </span><br><span class="line">#</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
+
+<p>R2的邻居关系也正常了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;R2&gt;display ospf 1 peer brief </span><br><span class="line"></span><br><span class="line">	 OSPF Process 1 with Router ID 10.0.0.2</span><br><span class="line">		  Peer Statistic Information</span><br><span class="line"> ----------------------------------------------------------------------------</span><br><span class="line"> Area Id          Interface                        Neighbor id      State    </span><br><span class="line"> 0.0.0.0          GigabitEthernet0/0/1             10.0.0.6         Full        </span><br><span class="line"> 0.0.0.1          GigabitEthernet0/0/2             4.4.4.4          Full        </span><br><span class="line"> 0.0.0.1          GigabitEthernet0/0/0             10.0.0.1         Full        </span><br><span class="line"> ----------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<h4 id="OSPF链路验证"><a href="#OSPF链路验证" class="headerlink" title="OSPF链路验证"></a>OSPF链路验证</h4><ol>
+<li><p>在R2与R4之间部署MD5的链路认证</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[R2-GigabitEthernet0/0/2]ospf authentication-mode md5 1 huawei5</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-3/Snipaste_2019-11-03_15-05-49.jpg" alt=""></p>
+<p>去看邻居信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;R2&gt;display ospf 1 peer brief </span><br><span class="line"></span><br><span class="line">	 OSPF Process 1 with Router ID 10.0.0.2</span><br><span class="line">		  Peer Statistic Information</span><br><span class="line">----------------------------------------------------------------------------</span><br><span class="line"> Area Id          Interface                        Neighbor id      State    </span><br><span class="line"> 0.0.0.0          GigabitEthernet0/0/1             10.0.0.6         Full        </span><br><span class="line"> 0.0.0.1          GigabitEthernet0/0/0             10.0.0.1         Full        </span><br><span class="line"> ----------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<p>现在与R4的邻居没有了，因为R2与R4连接的接口被配上了链路认证</p>
+</li>
+</ol>
+<ol start="2">
+<li><p>给R4也配上链路认证</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">	 OSPF Process 1 with Router ID 10.0.0.2</span><br><span class="line">		  Peer Statistic Information</span><br><span class="line">----------------------------------------------------------------------------</span><br><span class="line"> Area Id          Interface                        Neighbor id      State    </span><br><span class="line"> 0.0.0.0          GigabitEthernet0/0/1             10.0.0.6         Full        </span><br><span class="line"> 0.0.0.1          GigabitEthernet0/0/2             4.4.4.4          Full        </span><br><span class="line"> 0.0.0.1          GigabitEthernet0/0/0             10.0.0.1         Full        </span><br><span class="line"> ----------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<p>R2的与R4的邻居重新建立</p>
+</li>
+</ol>
+<h4 id="OSPF被动接口配置"><a href="#OSPF被动接口配置" class="headerlink" title="OSPF被动接口配置"></a>OSPF被动接口配置</h4><p>让一个接口从“参与者”变为“使用者”</p>
+<h5 id="拓扑-amp-规划"><a href="#拓扑-amp-规划" class="headerlink" title="拓扑&amp;规划"></a>拓扑&amp;规划</h5><p><img src="https://oss.sadly.pw/images/R-S/2019-11-3/Snipaste_2019-11-03_15-46-07.jpg" alt=""></p>
+<h5 id="实验过程-3"><a href="#实验过程-3" class="headerlink" title="实验过程"></a>实验过程</h5><ol>
+<li><p>配置接口ip，并且都放入area 0 中</p>
+</li>
+<li><p>对PC上的接口进行抓包，可以看到有很多OSPF的hello packet报文，报文中包含了本area中的信息</p>
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-3/Snipaste_2019-11-03_16-11-32.jpg" alt=""></p>
+<p>所以需要配置被动接口，禁止连接终端的接口接收发送OSPF报文</p>
+</li>
+<li><p>将与终端相连的接口配置为被动接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[R4]ospf 1</span><br><span class="line">[R4-ospf-1]sil	</span><br><span class="line">[R4-ospf-1]silent-interface g 0/0/2	</span><br><span class="line">[R4-ospf-1]display th</span><br><span class="line">[V200R003C00]</span><br><span class="line">#</span><br><span class="line">ospf 1 </span><br><span class="line"> silent-interface GigabitEthernet0/0/2</span><br><span class="line"> area 0.0.0.0 </span><br><span class="line">  network 10.0.0.16 0.0.0.7 </span><br><span class="line">  network 10.1.1.0 0.0.0.255 </span><br><span class="line">#</span><br><span class="line">return</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重新去抓包，就不会再发现有来自OSPF的报文了</p>
+</li>
+</ol>
+<h5 id="实验结论"><a href="#实验结论" class="headerlink" title="实验结论"></a>实验结论</h5><p>既然被动接口会使当前接口不再发送和接收OSPF的报文，所以不可以配置在路由之间的接口上，否则会使当前接口退出OSPF</p>
+<h4 id="OSPF的Router-ID"><a href="#OSPF的Router-ID" class="headerlink" title="OSPF的Router-ID"></a>OSPF的Router-ID</h4><p>其实关于Router-ID，我之前就做了简单的验证，当时得出的结论是：</p>
+<blockquote>
+<p><em>猜测：RoutID的原则是不重复，所以说是不是随便指定一个ip做为RoutID</em><br>实验：我新开了一台路由器去尝试，发现 RoutID的选择是根据第一个配置的接口ip进行选择的。我回头去看R3的数据，我第一个配置的接口Ip的确是1.0.0.10/30</p>
+</blockquote>
+<p>完善下Router ID的选举规则</p>
+<p>在没有手动配置Router-ID的情况下，第一个配置的接口IP，会被指定为Router-ID，如果这个IP被删除，如果当前有loopback地址，则Router-ID会被指定为loopback地址，如果没有，则会被指定为第二个配置的Router-ID，以此类推。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]int	</span><br><span class="line">[Huawei]interface g 0/0/0</span><br><span class="line">[Huawei-GigabitEthernet0/0/0]ip add 1.1.1.1 24</span><br><span class="line">[Huawei-GigabitEthernet0/0/0]interface g 0/0/1</span><br><span class="line">[Huawei-GigabitEthernet0/0/1]ip add 2.2.2.2 24</span><br><span class="line">[Huawei-GigabitEthernet0/0/1]disp	</span><br><span class="line">[Huawei-GigabitEthernet0/0/1]display r	</span><br><span class="line">[Huawei-GigabitEthernet0/0/1]display ro	</span><br><span class="line">[Huawei-GigabitEthernet0/0/1]display route id</span><br><span class="line">RouterID:1.1.1.1                               //此时的RouterID为第一个配置的接口IP</span><br><span class="line">[Huawei-GigabitEthernet0/0/1]interface g 0/0/0</span><br><span class="line">[Huawei-GigabitEthernet0/0/0]undo ip add</span><br><span class="line">[Huawei-GigabitEthernet0/0/0]display route id</span><br><span class="line">RouterID:2.2.2.2                               //删除第一个配置的接口IP后，被指定为第二个接口IP</span><br><span class="line">[Huawei-GigabitEthernet0/0/0]ip add 1.1.1.1 24</span><br><span class="line">[Huawei-GigabitEthernet0/0/0]interface l 0</span><br><span class="line">[Huawei-LoopBack0]ip add 6.6.6.6 32</span><br><span class="line">[Huawei-LoopBack0]interface g 0/0/1</span><br><span class="line">[Huawei-GigabitEthernet0/0/1]undo ip ad</span><br><span class="line">[Huawei-GigabitEthernet0/0/1]display route id</span><br><span class="line">RouterID:6.6.6.6                              //这时就会被指定为loopback地址</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>如果RouterID重复，会发生什么？</p>
+<p><strong>简单拓扑</strong></p>
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-3/Snipaste_2019-11-03_17-19-32.jpg" alt=""></p>
+</li>
+</ul>
+<p>配置相同的RouterID</p>
+<p><em>修改完RouterID后，会有这样的提醒：路由器ID已修改，请手动重置相关协议更新路由器ID</em></p>
+<p>现在去查看邻居</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> OSPF Process 1 with Router ID 1.1.1.1</span><br><span class="line">	 Neighbors </span><br><span class="line"></span><br><span class="line">Area 0.0.0.0 interface 1.1.1.1(GigabitEthernet0/0/0)&apos;s neighbors</span><br><span class="line">Router ID: 1.1.1.2          Address: 1.1.1.2         </span><br><span class="line">  State: Full  Mode:Nbr is  Master  Priority: 1</span><br><span class="line">  DR: 1.1.1.1  BDR: 1.1.1.2  MTU: 0    </span><br><span class="line">  Dead timer due in 40  sec </span><br><span class="line">  Retrans timer interval: 5 </span><br><span class="line">  Neighbor is up for 00:08:51     </span><br><span class="line">  Authentication Sequence: [ 0 ]</span><br></pre></td></tr></table></figure>
+
+<p>Router ID还是原来的，结合之前的提醒，需要重置一下协议：<code>reset ospf process</code>（这个命令只可以在用户界面使用）</p>
+<p>再去看邻居</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Huawei&gt;display ospf peer  </span><br><span class="line"></span><br><span class="line">OSPF Process 1 with Router ID 6.6.6.6</span><br></pre></td></tr></table></figure>
+
+<p>没有邻居了，那么路由自然也不会通告</p>
+<p>再看一下不同区域的相同RouterID</p>
+<p><img src="https://oss.sadly.pw/images/R-S/2019-11-3/Snipaste_2019-11-03_17-42-31.jpg" alt=""></p>
+<p>两侧的路由拥有相同的RouterID</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[Huawei]display ospf lsdb</span><br><span class="line"> OSPF Process 1 with Router ID 6.6.6.6</span><br><span class="line">	 Link State Database </span><br><span class="line">	         Area: 0.0.0.0</span><br><span class="line"> Type      LinkState ID    AdvRouter          Age  Len   Sequence   Metric</span><br><span class="line"> Router    6.6.6.7         6.6.6.7            425  36    80000004       1</span><br><span class="line"> Router    6.6.6.6         6.6.6.6            592  36    80000007       1</span><br><span class="line"> Router    1.1.1.2         1.1.1.2            788  36    80000008       1</span><br><span class="line"> Router    1.1.1.1         1.1.1.1           1512  36    80000005       1</span><br><span class="line"> Network   1.1.1.1         6.6.6.6            592  32    80000002       0</span><br><span class="line"> Sum-Net   1.1.2.0         6.6.6.7            371  28    80000001       1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[Huawei]ping 1.1.2.2</span><br><span class="line">  PING 1.1.2.2: 56  data bytes, press CTRL_C to break</span><br><span class="line">    Reply from 1.1.2.2: bytes=56 Sequence=1 ttl=254 time=30 ms</span><br><span class="line">    Reply from 1.1.2.2: bytes=56 Sequence=2 ttl=254 time=20 ms</span><br><span class="line">    Reply from 1.1.2.2: bytes=56 Sequence=3 ttl=254 time=30 ms</span><br><span class="line">    Reply from 1.1.2.2: bytes=56 Sequence=4 ttl=254 time=30 ms</span><br><span class="line">    Reply from 1.1.2.2: bytes=56 Sequence=5 ttl=254 time=30 ms</span><br><span class="line"></span><br><span class="line">  --- 1.1.2.2 ping statistics ---</span><br><span class="line">    5 packet(s) transmitted</span><br><span class="line">    5 packet(s) received</span><br><span class="line">    0.00% packet loss</span><br><span class="line">    round-trip min/avg/max = 20/28/30 ms</span><br></pre></td></tr></table></figure>
+
+<p>可以看出来，并没有对网络造成影响。</p>
+<p><strong>所以，RouterID在同区域内重叠是会影响ospf状态的，不同区域则不会</strong></p>
+<h2 id="DR与BDR"><a href="#DR与BDR" class="headerlink" title="DR与BDR"></a>DR与BDR</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;R1&gt;display ospf peer b</span><br><span class="line"></span><br><span class="line">	 OSPF Process 1 with Router ID 1.1.1.1</span><br><span class="line">		  Peer Statistic Information</span><br><span class="line">----------------------------------------------------------------------------</span><br><span class="line"> Area Id          Interface                        Neighbor id      State    </span><br><span class="line"> 0.0.0.0          GigabitEthernet0/0/0             2.2.2.2          2-Way       </span><br><span class="line"> 0.0.0.0          GigabitEthernet0/0/0             3.3.3.3          Full        </span><br><span class="line"> 0.0.0.0          GigabitEthernet0/0/0             4.4.4.4          Full       </span><br><span class="line"> ----------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;R1&gt;display ospf peer</span><br><span class="line"></span><br><span class="line">	 OSPF Process 1 with Router ID 1.1.1.1</span><br><span class="line">		 Neighbors </span><br><span class="line"></span><br><span class="line"> Area 0.0.0.0 interface 192.168.1.1(GigabitEthernet0/0/0)&apos;s neighbors</span><br><span class="line"> Router ID: 2.2.2.2          Address: 192.168.1.2     </span><br><span class="line">   State: 2-Way  Mode:Nbr is  Master  Priority: 1</span><br><span class="line">   DR: 192.168.1.3  BDR: 192.168.1.4  MTU: 0    </span><br><span class="line">   Dead timer due in 37  sec </span><br><span class="line">   Retrans timer interval: 0 </span><br><span class="line">   Neighbor is up for 00:00:00     </span><br><span class="line">   Authentication Sequence: [ 0 ] </span><br><span class="line"></span><br><span class="line"> Router ID: 3.3.3.3          Address: 192.168.1.3     </span><br><span class="line">   State: Full  Mode:Nbr is  Master  Priority: 1</span><br><span class="line">   DR: 192.168.1.3  BDR: 192.168.1.4  MTU: 0    </span><br><span class="line">   Dead timer due in 30  sec </span><br><span class="line">   Retrans timer interval: 5 </span><br><span class="line">   Neighbor is up for 00:02:26     </span><br><span class="line">   Authentication Sequence: [ 0 ] </span><br><span class="line"></span><br><span class="line"> Router ID: 4.4.4.4          Address: 192.168.1.4     </span><br><span class="line">   State: Full  Mode:Nbr is  Master  Priority: 1</span><br><span class="line">   DR: 192.168.1.3  BDR: 192.168.1.4  MTU: 0    </span><br><span class="line">   Dead timer due in 32  sec </span><br><span class="line">   Retrans timer interval: 5 </span><br><span class="line">   Neighbor is up for 00:02:25     </span><br><span class="line">   Authentication Sequence: [ 0 ]</span><br></pre></td></tr></table></figure>
+
+<p>此时R3为DR，R4为BDR</p>
+<p>接着修改OSPF的网络类型为点到多点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ospf network-type p2mp</span><br></pre></td></tr></table></figure>
+
+<p>此时可以看到，DR和BDR都是none</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;R1&gt;display ospf peer</span><br><span class="line"></span><br><span class="line">	 OSPF Process 1 with Router ID 1.1.1.1</span><br><span class="line">		 Neighbors </span><br><span class="line"></span><br><span class="line"> Area 0.0.0.0 interface 192.168.1.1(GigabitEthernet0/0/0)&apos;s neighbors</span><br><span class="line"> Router ID: 2.2.2.2          Address: 192.168.1.2     </span><br><span class="line">   State: Full  Mode:Nbr is  Master  Priority: 1</span><br><span class="line">   DR: None   BDR: None   MTU: 0    </span><br><span class="line">   Dead timer due in 100 sec </span><br><span class="line">   Retrans timer interval: 5 </span><br><span class="line">   Neighbor is up for 00:00:43     </span><br><span class="line">   Authentication Sequence: [ 0 ] </span><br><span class="line"></span><br><span class="line"> Router ID: 3.3.3.3          Address: 192.168.1.3     </span><br><span class="line">   State: Full  Mode:Nbr is  Master  Priority: 1</span><br><span class="line">   DR: None   BDR: None   MTU: 0    </span><br><span class="line">   Dead timer due in 120 sec </span><br><span class="line">   Retrans timer interval: 5 </span><br><span class="line">   Neighbor is up for 00:00:15     </span><br><span class="line">   Authentication Sequence: [ 0 ] </span><br><span class="line"></span><br><span class="line"> Router ID: 4.4.4.4          Address: 192.168.1.4     </span><br><span class="line">   State: Full  Mode:Nbr is  Master  Priority: 1</span><br><span class="line">   DR: None   BDR: None   MTU: 0    </span><br><span class="line">   Dead timer due in 103 sec </span><br><span class="line">   Retrans timer interval: 5 </span><br><span class="line">   Neighbor is up for 00:00:15     </span><br><span class="line">   Authentication Sequence: [ 0 ]</span><br></pre></td></tr></table></figure>
+
+<p>所以说OSPF在点到多点的网络下不选举DR、BDR</p>
+<p>接下来将网络类型还原</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ospf network-type broadcast</span><br></pre></td></tr></table></figure>
+
+<p>修改DR优先级，R1：100  R2：50  R4：0   R3：默认</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">[R1-GigabitEthernet0/0/0]display ospf peer</span><br><span class="line"></span><br><span class="line">	 OSPF Process 1 with Router ID 1.1.1.1</span><br><span class="line">		 Neighbors </span><br><span class="line"></span><br><span class="line"> Area 0.0.0.0 interface 192.168.1.1(GigabitEthernet0/0/0)&apos;s neighbors</span><br><span class="line"> Router ID: 2.2.2.2          Address: 192.168.1.2     </span><br><span class="line">   State: Full  Mode:Nbr is  Master  Priority: 50</span><br><span class="line">   DR: 192.168.1.3  BDR: 192.168.1.1  MTU: 0    </span><br><span class="line">   Dead timer due in 40  sec </span><br><span class="line">   Retrans timer interval: 5 </span><br><span class="line">   Neighbor is up for 00:00:11     </span><br><span class="line">   Authentication Sequence: [ 0 ] </span><br><span class="line"></span><br><span class="line"> Router ID: 3.3.3.3          Address: 192.168.1.3     </span><br><span class="line">   State: Full  Mode:Nbr is  Master  Priority: 1</span><br><span class="line">   DR: 192.168.1.3  BDR: 192.168.1.1  MTU: 0    </span><br><span class="line">   Dead timer due in 35  sec </span><br><span class="line">   Retrans timer interval: 5 </span><br><span class="line">   Neighbor is up for 00:01:49     </span><br><span class="line">   Authentication Sequence: [ 0 ] </span><br><span class="line"></span><br><span class="line"> Router ID: 4.4.4.4          Address: 192.168.1.4     </span><br><span class="line">   State: Full  Mode:Nbr is  Master  Priority: 0</span><br><span class="line">   DR: 192.168.1.3  BDR: 192.168.1.1  MTU: 0    </span><br><span class="line">   Dead timer due in 36  sec </span><br><span class="line">   Retrans timer interval: 4 </span><br><span class="line">   Neighbor is up for 00:00:10     </span><br><span class="line">   Authentication Sequence: [ 0 ]</span><br></pre></td></tr></table></figure>
+
+<p>此时R3是DR，R1是BDR</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://eeeje.com/2019/11/03/OSPF/" title="华为设备OSPF路由的配置" target="_blank" rel="external">https://eeeje.com/2019/11/03/OSPF/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://eeeje.com" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://eeeje.com" target="_blank"><span class="text-dark">辣鸡熊</span><small class="ml-1x"></small></a></h3>
+        <div>博客基于hexo搭建，托管于Github，部分图片寄存于阿里oss</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/11/03/1103/" title="1103 OSPF笔记"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/11/01/Static/" title="华为设备静态路由的配置"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/lajix" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/lajix" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/bearshili" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://oss.sadly.pw/images/wechat.jpg" target="_blank" title="Wechat" data-toggle=tooltip data-placement=top><i class="icon icon-wechat"></i></a></li>
+        
+        <li><a href="/mailto:admin@eeeji.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 辣鸡熊
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'LjlF9WJs8aeGL4yTRFi5ttA3-gzGzoHsz',
+    appKey: 'kvtr07LLIscULJ5CEYKut64m',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

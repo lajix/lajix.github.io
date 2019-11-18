@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>华为设备静态路由的配置 | 辣鸡熊个人博客</title>
+  <meta name="description" content="静态路由一种手动配置的路由方式，各厂商对静态路由的优先级处理不同。 优先级在实验开始之前，首先了解一下华为设备的路由优先级（值越大优先级越小）    协议&#x2F;种类 优先级    direct 0   OSPF 10   IS-IS 15   Static 60   RIP 100   IBGP 130   OSPF ASE&#x2F;import 150   EBGP 170   UNKNOWN 255">
+<meta name="keywords" content="课程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="华为设备静态路由的配置">
+<meta property="og:url" content="https:&#x2F;&#x2F;eeeje.com&#x2F;2019&#x2F;11&#x2F;01&#x2F;Static&#x2F;index.html">
+<meta property="og:site_name" content="辣鸡熊个人博客">
+<meta property="og:description" content="静态路由一种手动配置的路由方式，各厂商对静态路由的优先级处理不同。 优先级在实验开始之前，首先了解一下华为设备的路由优先级（值越大优先级越小）    协议&#x2F;种类 优先级    direct 0   OSPF 10   IS-IS 15   Static 60   RIP 100   IBGP 130   OSPF ASE&#x2F;import 150   EBGP 170   UNKNOWN 255">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_11-16-52.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_12-28-18.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_12-55-58.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_13-21-40.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_13-38-05.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_13-48-32.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_15-37-35.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_15-44-16.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_16-02-15.jpg">
+<meta property="og:updated_time" content="2019-11-18T11:16:13.001Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-11-01&#x2F;2019-11-01_11-16-52.jpg">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://eeeje.com/2019/11/01/Static/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="辣鸡熊个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://eeeje.com" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">辣鸡熊</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> HangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/lajix" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/lajix" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/bearshili" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://oss.sadly.pw/images/wechat.jpg" target="_blank" title="Wechat" data-toggle=tooltip data-placement=top><i class="icon icon-wechat"></i></a></li>
+        
+        <li><a href="/mailto:admin@eeeji.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>博客正在尽力优化!!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B4%AD%E7%89%A9/">购物</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag">学习</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BE%E7%A8%8B/" rel="tag">课程</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AD%E7%89%A9/" rel="tag">购物</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/linux/" style="font-size: 13.5px;">linux</a> <a href="/tags/%E5%AD%A6%E4%B9%A0/" style="font-size: 13.5px;">学习</a> <a href="/tags/%E8%AF%BE%E7%A8%8B/" style="font-size: 14px;">课程</a> <a href="/tags/%E8%B4%AD%E7%89%A9/" style="font-size: 13px;">购物</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/ICMP/" class="title">ICMP</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T11:16:12.754Z" itemprop="datePublished">2019-11-18</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/09/ARP/" class="title">ARP学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-08T17:09:07.000Z" itemprop="datePublished">2019-11-09</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/05/11.5/" class="title">11.5笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-05T11:05:44.000Z" itemprop="datePublished">2019-11-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/03/1103/" class="title">1103 OSPF笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-03T11:05:44.000Z" itemprop="datePublished">2019-11-03</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/03/OSPF/" class="title">华为设备OSPF路由的配置</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-02T17:44:10.000Z" itemprop="datePublished">2019-11-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#静态路由"><span class="toc-number">1.</span> <span class="toc-text">静态路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#优先级"><span class="toc-number">1.1.</span> <span class="toc-text">优先级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验设备"><span class="toc-number">1.2.</span> <span class="toc-text">实验设备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验拓扑-amp-规划"><span class="toc-number">1.3.</span> <span class="toc-text">实验拓扑&amp;规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验目的"><span class="toc-number">1.4.</span> <span class="toc-text">实验目的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验过程"><span class="toc-number">1.5.</span> <span class="toc-text">实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#给PC配置相应的IP"><span class="toc-number">1.5.1.</span> <span class="toc-text">给PC配置相应的IP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#给R1，R2，R3配置对应接口IP（以R1为例）"><span class="toc-number">1.5.2.</span> <span class="toc-text">给R1，R2，R3配置对应接口IP（以R1为例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置静态路由"><span class="toc-number">1.5.3.</span> <span class="toc-text">配置静态路由</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#验证"><span class="toc-number">1.6.</span> <span class="toc-text">验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验结果"><span class="toc-number">1.7.</span> <span class="toc-text">实验结果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#浮动静态路由"><span class="toc-number">2.</span> <span class="toc-text">浮动静态路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#实验设备-1"><span class="toc-number">2.1.</span> <span class="toc-text">实验设备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验拓扑-amp-规划-1"><span class="toc-number">2.2.</span> <span class="toc-text">实验拓扑&amp;规划</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验目的-1"><span class="toc-number">2.3.</span> <span class="toc-text">实验目的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实验过程-1"><span class="toc-number">2.4.</span> <span class="toc-text">实验过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#配置浮动静态路由（优先级不同的静态路由）"><span class="toc-number">2.4.1.</span> <span class="toc-text">配置浮动静态路由（优先级不同的静态路由）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#验证-1"><span class="toc-number">2.4.2.</span> <span class="toc-text">验证</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#负载均衡"><span class="toc-number">2.5.</span> <span class="toc-text">负载均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#修改之前优先级为100的路由"><span class="toc-number">2.5.1.</span> <span class="toc-text">修改之前优先级为100的路由</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Static" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      华为设备静态路由的配置
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/11/01/Static/" class="article-date">
+	  <time datetime="2019-11-01T08:22:10.000Z" itemprop="datePublished">2019-11-01</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/%E8%AF%BE%E7%A8%8B/" rel="tag">课程</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/11/01/Static/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.6k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 7(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="静态路由"><a href="#静态路由" class="headerlink" title="静态路由"></a>静态路由</h2><p>一种手动配置的路由方式，各厂商对静态路由的优先级处理不同。</p>
+<h3 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h3><p>在实验开始之前，首先了解一下华为设备的路由优先级（值越大优先级越小）</p>
+<table>
+<thead>
+<tr>
+<th>协议/种类</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>direct</td>
+<td>0</td>
+</tr>
+<tr>
+<td>OSPF</td>
+<td>10</td>
+</tr>
+<tr>
+<td>IS-IS</td>
+<td>15</td>
+</tr>
+<tr>
+<td>Static</td>
+<td>60</td>
+</tr>
+<tr>
+<td>RIP</td>
+<td>100</td>
+</tr>
+<tr>
+<td>IBGP</td>
+<td>130</td>
+</tr>
+<tr>
+<td>OSPF ASE/import</td>
+<td>150</td>
+</tr>
+<tr>
+<td>EBGP</td>
+<td>170</td>
+</tr>
+<tr>
+<td>UNKNOWN</td>
+<td>255</td>
+</tr>
+</tbody></table>
+<p>可以看到华为设备的静态路由优先级是低于ospf与isis的（不算直连路由）</p>
+<h3 id="实验设备"><a href="#实验设备" class="headerlink" title="实验设备"></a>实验设备</h3><p>实验中使用的设备：HUAWEI AR2220  &amp;  PC</p>
+<h3 id="实验拓扑-amp-规划"><a href="#实验拓扑-amp-规划" class="headerlink" title="实验拓扑&amp;规划"></a>实验拓扑&amp;规划</h3><p><img src="https://oss.sadly.pw/images/R-S/2019-11-01/2019-11-01_11-16-52.jpg" alt=""></p>
+<h3 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h3><p>利用默认路由以及配置静态路由使PC1与PC2之间可以互通</p>
+<h3 id="实验过程"><a href="#实验过程" class="headerlink" title="实验过程"></a>实验过程</h3><ol>
+<li><h4 id="给PC配置相应的IP"><a href="#给PC配置相应的IP" class="headerlink" title="给PC配置相应的IP"></a>给PC配置相应的IP</h4></li>
+<li><h4 id="给R1，R2，R3配置对应接口IP（以R1为例）"><a href="#给R1，R2，R3配置对应接口IP（以R1为例）" class="headerlink" title="给R1，R2，R3配置对应接口IP（以R1为例）"></a>给R1，R2，R3配置对应接口IP（以R1为例）</h4></li>
+</ol>
+<p><strong>R1：</strong></p>
+<pre><code>[R1]interface g 0/0/2 
+[R1-GigabitEthernet0/0/2]ip add 172.10.0.254 24
+[R1-GigabitEthernet0/0/2]q
+[R1]interface g 0/0/0
+[R1-GigabitEthernet0/0/0]ip add 10.1.1.1 30
+[R1-GigabitEthernet0/0/0]q
+[R1]q
+&lt;R1&gt;save</code></pre><p>现在我们去看路由表（以R1为例）,命令<code>display ip routing-table</code></p>
+<pre><code>Routing Tables: Public
+         Destinations : 10       Routes : 10       
+Destination/Mask    Proto  Pre Cost Flags NextHop      Interface
+
+       10.1.1.0/30  Direct  0    0    D   10.1.1.1      GigabitEthernet 0/0/0
+       10.1.1.1/32  Direct  0    0    D   127.0.0.1     GigabitEthernet 0/0/0
+       10.1.1.3/32  Direct  0    0    D   127.0.0.1     GigabitEthernet 0/0/0
+      127.0.0.0/8   Direct  0    0    D   127.0.0.1     InLoopBack0
+      127.0.0.1/32  Direct  0    0    D   127.0.0.1     InLoopBack0
+127.255.255.255/32  Direct  0    0    D   127.0.0.1     InLoopBack0
+     172.10.0.0/24  Direct  0    0    D   172.10.0.254  GigabitEthernet 0/0/2
+   172.10.0.254/32  Direct  0    0    D   127.0.0.1     GigabitEthernet 0/0/2
+   172.10.0.255/32  Direct  0    0    D   127.0.0.1     GigabitEthernet 0/0/2
+255.255.255.255/32  Direct  0    0    D   127.0.0.1     InLoopBack0</code></pre><p>可以看到配置了IP的接口和所在网络都拥有了一条路由，这就是前面提到的直连路由，也就是默认路由</p>
+<p>那么，想要实现我们的目标，可以分为两个流程来理解<br><img src="https://oss.sadly.pw/images/R-S/2019-11-01/2019-11-01_12-28-18.jpg" alt=""><br>所以，在R1,R2上配置前往PC2网段的路由，在R2,R3上配置前往PC1网段的路由，即可实现网络互通。</p>
+<ol start="3">
+<li><h4 id="配置静态路由"><a href="#配置静态路由" class="headerlink" title="配置静态路由"></a>配置静态路由</h4></li>
+</ol>
+<p><strong>R1：</strong></p>
+<pre><code>[R1]ip route-static 172.10.10.0 24 GigabitEthernet0/0/0 10.1.1.2
+[R1]q
+&lt;R1&gt;save</code></pre><p><img src="https://oss.sadly.pw/images/R-S/2019-11-01/2019-11-01_12-55-58.jpg" alt=""></p>
+<p>查看R1路由表，多了一条这样的路由</p>
+<pre><code>172.10.10.0/24  Static  60   0   D   10.1.1.2  GigabitEthernet 0/0/0</code></pre><p>可以看到优先级,下一跳，出接口等信息</p>
+<p><strong>R2：</strong></p>
+<pre><code>[R2]ip route-static 172.10.10.0 24 GigabitEthernet 0/0/2 10.1.1.6
+[R2]q
+&lt;R1&gt;save</code></pre><p><strong>R3：</strong></p>
+<pre><code>[R3]ip route-static 172.10.0.0 24 GigabitEthernet 0/0/2 10.1.1.5
+[R3]q
+&lt;R1&gt;save</code></pre><h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>接下来，由从<code>PC1</code>ping<code>PC2</code>检查网络是否相通<br><img src="https://oss.sadly.pw/images/R-S/2019-11-01/2019-11-01_13-21-40.jpg" alt=""></p>
+<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p>PC1 与 PC2 互通</p>
+<h2 id="浮动静态路由"><a href="#浮动静态路由" class="headerlink" title="浮动静态路由"></a>浮动静态路由</h2><p>静态路由优先级的一种使用方式，通过配置不同优先级的静态路由实现备用链路<br><em>Q:静态路由应该也可以通过和其他路由协议（ospf等）之间的优先级差距，实现备用链路吧？</em></p>
+<h3 id="实验设备-1"><a href="#实验设备-1" class="headerlink" title="实验设备"></a>实验设备</h3><p>HUAWEI AR2220  &amp;  PC</p>
+<h3 id="实验拓扑-amp-规划-1"><a href="#实验拓扑-amp-规划-1" class="headerlink" title="实验拓扑&amp;规划"></a>实验拓扑&amp;规划</h3><p><img src="https://oss.sadly.pw/images/R-S/2019-11-01/2019-11-01_13-38-05.jpg" alt=""></p>
+<h3 id="实验目的-1"><a href="#实验目的-1" class="headerlink" title="实验目的"></a>实验目的</h3><p>配置不同优先级的静态路由实现当R2出现故障时，切换为前往R3的路由，保持网络通畅</p>
+<h3 id="实验过程-1"><a href="#实验过程-1" class="headerlink" title="实验过程"></a>实验过程</h3><p>相对于上一个实验环境，只多了两条静态路由，所以，直接使用了上一个实验环境进行配置</p>
+<p>增加连线，并配置接口ip</p>
+<pre><code>[R1]interface GigabitEthernet 0/0/1
+[R1-GigabitEthernet0/0/1]ip add 10.1.1.9 30
+[R1-GigabitEthernet0/0/1]q
+[R1]q
+&lt;R1&gt;save</code></pre><p>​<br>当前的路由路径（<code>PC1</code>ping<code>PC2</code>）:</p>
+<pre><code>PC&gt;tracert 172.10.10.1
+
+traceroute to 172.10.10.1, 8 hops max
+(ICMP), press Ctrl+C to stop
+ 1  172.10.0.254   16 ms  15 ms  16 ms
+ 2  10.1.1.2   16 ms  31 ms  15 ms
+ 3  10.1.1.6   32 ms  31 ms  31 ms
+ 4  172.10.10.1   31 ms  32 ms  31 ms</code></pre><h4 id="配置浮动静态路由（优先级不同的静态路由）"><a href="#配置浮动静态路由（优先级不同的静态路由）" class="headerlink" title="配置浮动静态路由（优先级不同的静态路由）"></a>配置浮动静态路由（优先级不同的静态路由）</h4><p><strong>R1：</strong></p>
+<pre><code>[R1]ip route-static 172.10.10.0 24 GigabitEthernet 0/0/1 10.1.1.10 preference 100
+&lt;R1&gt;save</code></pre><p><img src="https://oss.sadly.pw/images/R-S/2019-11-01/2019-11-01_13-48-32.jpg" alt=""></p>
+<p>优先级配置为100，低于之前配置的缺省值<code>60</code></p>
+<p><em>此时使用<code>display ip routing-table</code>查看路由表，并没有看到这条路由，猜测是因为没有生效的原因</em></p>
+<p><strong>R3：</strong></p>
+<pre><code>[R3]ip route-static 172.10.0.0 24 GigabitEthernet 0/0/0 10.1.1.9 preference 100
+[R3]q
+&lt;R3&gt;save</code></pre><p><del>#### 验证&amp;排错</del><br><del>关闭R2</del><br><del>查看R1路由表，发现并没有之前配置的那条优先级为100的路由条目</del></p>
+<p><del>去翻书，发现需要用这条命令去查<code>display ip routing-table protocol static</code></del></p>
+<p><del>结果还是没有，可以看到已配置的路由数量是两条，但是Inactive部分并没有路由条目</del></p>
+<p><del>把这条备用路由undo了，重新配置！</del></p>
+<p><del>[R1]undo ip route-static 172.10.10.0 24 10.1.1.10 preference 100</del></p>
+<p><del>再去用<code>display ip routing-table protocol static</code>看路由表</del></p>
+<p><del>没有了</del><br>-<del>重新配置，查看路由表，还是没有！</del><br><del><em>猜测：书上使用的命令并没有配置出接口，我怀疑是这里的问题</em></del></p>
+<p><del>重新配置，并且不指定出接口</del></p>
+<p><del>[R1]ip route-static 172.10.10.0 24 10.1.1.10 preference 100</del><br><del>[R1]q</del><br><del><R1>save</del><br><del>R3同理，undo了原来的条目，重新配置</del></p>
+<p><del>[R3]undo ip route-static 172.10.0.0 24 GigabitEthernet 0/0/0 10.1.1.9 preference100<br>~</del>[R3]ip route-static 172.10.0.0 24 10.1.1.9 preference 100~~<br>    <br /></p>
+<p> <strong>加了新的物理连接要记得配IP！</strong><br> <strong>收获：当静态路由的出接口配在未配置IP的接口上时，不会显示在路由表上，这时候，就可以去检查接口IP是否有问题</strong></p>
+<h4 id="验证-1"><a href="#验证-1" class="headerlink" title="验证"></a>验证</h4><ul>
+<li>关闭R2的GE 0/0/0接口</li>
+</ul>
+<pre><code>[R2]interface GigabitEthernet 0/0/0
+[R2-GigabitEthernet0/0/0]shutdown</code></pre><ul>
+<li><code>PC1</code>ping<code>pc2</code> 失败</li>
+</ul>
+<p>对R3的GE 0/0/0 0/0/1 0/0/2 同时进行抓包<br><img src="https://oss.sadly.pw/images/R-S/2019-11-01/2019-11-01_15-37-35.jpg" alt=""></p>
+<p>可以看出来，PC1发出的包到达了PC2，PC2返回的包却被R3发往了优先级为60的R2，R2随之丢弃</p>
+<ul>
+<li>当我关闭R2设备时<br><img src="https://oss.sadly.pw/images/R-S/2019-11-01/2019-11-01_15-44-16.jpg" alt=""></li>
+</ul>
+<p>链路是成立的</p>
+<h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><p>通过条优先级相同，下一跳不同的静态路由实现负载均衡</p>
+<h4 id="修改之前优先级为100的路由"><a href="#修改之前优先级为100的路由" class="headerlink" title="修改之前优先级为100的路由"></a>修改之前优先级为100的路由</h4><pre><code>[R1]ip route-static 172.10.10.0 24 GigabitEthernet 0/0/1 10.1.1.10 preference 60</code></pre><p><img src="https://oss.sadly.pw/images/R-S/2019-11-01/2019-11-01_16-02-15.jpg" alt="">    </p>
+<p>完成</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>在配置静态路由时，需要注意整个链路的状态，通常源网络与目的网络中间的每一台设备都要配置对应指向的静态路由，就想接力一样。</strong></p>
+<p>​    </p>
+<p>​    </p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://eeeje.com/2019/11/01/Static/" title="华为设备静态路由的配置" target="_blank" rel="external">https://eeeje.com/2019/11/01/Static/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://eeeje.com" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://eeeje.com" target="_blank"><span class="text-dark">辣鸡熊</span><small class="ml-1x"></small></a></h3>
+        <div>博客基于hexo搭建，托管于Github，部分图片寄存于阿里oss</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/11/03/OSPF/" title="华为设备OSPF路由的配置"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/10/31/docker/" title="linux中docker的使用笔记"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/lajix" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/lajix" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/bearshili" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://oss.sadly.pw/images/wechat.jpg" target="_blank" title="Wechat" data-toggle=tooltip data-placement=top><i class="icon icon-wechat"></i></a></li>
+        
+        <li><a href="/mailto:admin@eeeji.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 辣鸡熊
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'LjlF9WJs8aeGL4yTRFi5ttA3-gzGzoHsz',
+    appKey: 'kvtr07LLIscULJ5CEYKut64m',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

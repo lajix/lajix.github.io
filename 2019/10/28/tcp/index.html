@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>TCP/UDP | 辣鸡熊个人博客</title>
+  <meta name="description" content="传输协议之-TCP&#x2F;UDP对比TCP 可靠 面向连接-类似打电话&#x2F;收到扣1  但是效率比较低UDP 不可靠的 面向无连接-类似群聊 效率高eg：QQ传文件-TCP（保证文件完整），发消息-UDP 数据包结构 TCPtcp三次握手 甲：你是小王？乙：是的，我是小王，你是老李吗？甲：是的我是老李  流程：主机1发送SYNseq=0，ctl=SYN（seq标记位，序列号） –&amp;gt;主机2收到SYN，发">
+<meta name="keywords" content="学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP&#x2F;UDP">
+<meta property="og:url" content="https:&#x2F;&#x2F;eeeje.com&#x2F;2019&#x2F;10&#x2F;28&#x2F;tcp&#x2F;index.html">
+<meta property="og:site_name" content="辣鸡熊个人博客">
+<meta property="og:description" content="传输协议之-TCP&#x2F;UDP对比TCP 可靠 面向连接-类似打电话&#x2F;收到扣1  但是效率比较低UDP 不可靠的 面向无连接-类似群聊 效率高eg：QQ传文件-TCP（保证文件完整），发消息-UDP 数据包结构 TCPtcp三次握手 甲：你是小王？乙：是的，我是小王，你是老李吗？甲：是的我是老李  流程：主机1发送SYNseq=0，ctl=SYN（seq标记位，序列号） –&amp;gt;主机2收到SYN，发">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-10-28&#x2F;baotou.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-10-28&#x2F;woshou.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-10-28&#x2F;quereng.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-10-28&#x2F;huihua.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-10-28&#x2F;zhongzhi.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-10-28&#x2F;chongchuan3.jpg">
+<meta property="og:updated_time" content="2019-11-18T11:16:13.029Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;2019-10-28&#x2F;baotou.jpg">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://eeeje.com/2019/10/28/tcp/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="辣鸡熊个人博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://eeeje.com" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">辣鸡熊</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md"></h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> HangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/lajix" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/lajix" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/bearshili" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://oss.sadly.pw/images/wechat.jpg" target="_blank" title="Wechat" data-toggle=tooltip data-placement=top><i class="icon icon-wechat"></i></a></li>
+        
+        <li><a href="/mailto:admin@eeeji.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>博客正在尽力优化!!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B4%AD%E7%89%A9/">购物</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag">学习</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%BE%E7%A8%8B/" rel="tag">课程</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%B4%AD%E7%89%A9/" rel="tag">购物</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/linux/" style="font-size: 13.5px;">linux</a> <a href="/tags/%E5%AD%A6%E4%B9%A0/" style="font-size: 13.5px;">学习</a> <a href="/tags/%E8%AF%BE%E7%A8%8B/" style="font-size: 14px;">课程</a> <a href="/tags/%E8%B4%AD%E7%89%A9/" style="font-size: 13px;">购物</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/18/ICMP/" class="title">ICMP</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-18T11:16:12.754Z" itemprop="datePublished">2019-11-18</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/09/ARP/" class="title">ARP学习笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-08T17:09:07.000Z" itemprop="datePublished">2019-11-09</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/05/11.5/" class="title">11.5笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-05T11:05:44.000Z" itemprop="datePublished">2019-11-05</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/03/1103/" class="title">1103 OSPF笔记</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-03T11:05:44.000Z" itemprop="datePublished">2019-11-03</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/11/03/OSPF/" class="title">华为设备OSPF路由的配置</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-11-02T17:44:10.000Z" itemprop="datePublished">2019-11-03</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#传输协议之-TCP-UDP"><span class="toc-number">1.</span> <span class="toc-text">传输协议之-TCP/UDP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对比"><span class="toc-number">1.1.</span> <span class="toc-text">对比</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#数据包结构"><span class="toc-number">1.1.1.</span> <span class="toc-text">数据包结构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP"><span class="toc-number">1.2.</span> <span class="toc-text">TCP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp三次握手"><span class="toc-number">1.2.1.</span> <span class="toc-text">tcp三次握手</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp会话确认"><span class="toc-number">1.2.2.</span> <span class="toc-text">tcp会话确认</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp会话的拥塞和流量控制"><span class="toc-number">1.2.3.</span> <span class="toc-text">tcp会话的拥塞和流量控制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#tcp会话的终止-四次挥手"><span class="toc-number">1.2.4.</span> <span class="toc-text">tcp会话的终止-四次挥手</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UDP"><span class="toc-number">1.3.</span> <span class="toc-text">UDP</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结对比"><span class="toc-number">1.4.</span> <span class="toc-text">总结对比</span></a></li></ol></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-tcp" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      TCP/UDP
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/10/28/tcp/" class="article-date">
+	  <time datetime="2019-10-28T11:41:10.000Z" itemprop="datePublished">2019-10-28</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/%E8%B7%AF%E7%94%B1%E4%BA%A4%E6%8D%A2/">路由交换</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/%E5%AD%A6%E4%B9%A0/" rel="tag">学习</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/10/28/tcp/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 863(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 3(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="传输协议之-TCP-UDP"><a href="#传输协议之-TCP-UDP" class="headerlink" title="传输协议之-TCP/UDP"></a>传输协议之-TCP/UDP</h2><h3 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h3><p>TCP <strong>可靠</strong> 面向连接-类似打电话/收到扣1  但是效率比较低<br>UDP <strong>不可靠的</strong> 面向无连接-类似群聊 效率高<br>eg：QQ传文件-TCP（保证文件完整），发消息-UDP</p>
+<h4 id="数据包结构"><a href="#数据包结构" class="headerlink" title="数据包结构"></a>数据包结构</h4><p><img src="https://oss.sadly.pw/images/R-S/2019-10-28/baotou.jpg" alt=""></p>
+<h3 id="TCP"><a href="#TCP" class="headerlink" title="TCP"></a>TCP</h3><h4 id="tcp三次握手"><a href="#tcp三次握手" class="headerlink" title="tcp三次握手"></a>tcp三次握手</h4><blockquote>
+<p>甲：你是小王？<br>乙：是的，我是小王，你是老李吗？<br>甲：是的我是老李</p>
+</blockquote>
+<p>流程：<code>主机1</code>发送SYN<code>seq=0，ctl=SYN</code>（seq标记位，序列号） –&gt;<code>主机2</code>收到SYN，发送SYN及ACK（确认号：收到的序列号+1）<code>seq=0（序列号）,ack=1,ctl=SYN(同步位),ACK</code>–—&gt;<code>主机1</code>收到STN及ACK，Established<code>seq=1 ack=1 ctl=ACK</code><br><br /><br>抓包实例<br><img src="https://oss.sadly.pw/images/R-S/2019-10-28/woshou.jpg" alt=""></p>
+<p><em>拓展：安全方向-SYN Flood（洪水）攻击是ddos的主要方式，通过僵尸网络发送大量的第一个SYN报文，并不回复第二个包。</em><br><br /></p>
+<hr>
+<h4 id="tcp会话确认"><a href="#tcp会话确认" class="headerlink" title="tcp会话确认"></a>tcp会话确认</h4><ul>
+<li>所有的包都要确认，只有第一个包是没有确认号的</li>
+<li>最终的确认号就是数据的大小<br><code>主机1</code> <code>seq=1 ack=1 |Data（9字节）</code>–&gt;<code>主机2</code> <code>seq=1 ack=10 |Data（20字节）</code>“ack=10理解为‘<em>你可以发送序列号为10的数据包了</em>’”–&gt;<code>主机1</code> <code>seq=10 ack=21 |Data（12字节）</code>–&gt;<code>主机2</code> <code>seq=21 ack=22 |Data（n字节）</code></li>
+</ul>
+<p><strong>确认号就是前一个包的序列号+数据</strong></p>
+<ul>
+<li>不是每一个包都会确认，<code>主机2</code>连续发包时<code>主机1</code>多个包回复一个确认。</li>
+</ul>
+<p><em>理解：乙给甲说了很多句话，甲回复乙，前几句话我都听到了，然后乙接着讲话。</em><br><br /><br>抓包实例（从阿里云oss下载文件）<br><img src="https://oss.sadly.pw/images/R-S/2019-10-28/quereng.jpg" alt=""><br><br /></p>
+<hr>
+<h4 id="tcp会话的拥塞和流量控制"><a href="#tcp会话的拥塞和流量控制" class="headerlink" title="tcp会话的拥塞和流量控制"></a>tcp会话的拥塞和流量控制</h4><blockquote>
+<p>“你说太快了，慢点”<br>“你说太慢了，快点”</p>
+</blockquote>
+<p>每个数据包有个window字段 <code>win</code> 窗口大小决定了在收到确认前可以发送的字节数。<br><br /><br>抓包实例（下载文件）<br><img src="https://oss.sadly.pw/images/R-S/2019-10-28/huihua.jpg" alt=""><br>实际抓包过程中发现，服务器发过来的包要远超过主机确认包中的窗口大小。<br><br /><br><strong>Q：why？</strong><br><br /></p>
+<hr>
+<h4 id="tcp会话的终止-四次挥手"><a href="#tcp会话的终止-四次挥手" class="headerlink" title="tcp会话的终止-四次挥手"></a>tcp会话的终止-四次挥手</h4><blockquote>
+<p>小王：我要挂了<br>老李：好的，再见<br>老李：我也挂了<br>小王：好的，再见</p>
+</blockquote>
+<p>终止位FIN，位于flages的最后一个字节<br>并不一定是所有的终止都有四次握手<br>比如我的多次尝试都没有抓到四次握手的终止会话<br><img src="https://oss.sadly.pw/images/R-S/2019-10-28/zhongzhi.jpg" alt=""><br>可以看到主机发出了带<code>FIN</code>的包，服务器确认了上一个包并带了<code>FIN</code>标识，主机确认了这个包后连接被关闭。<br /><br>另外，我在抓包时发现了另外一个现象：<br><img src="https://oss.sadly.pw/images/R-S/2019-10-28/chongchuan3.jpg" alt=""><br>可以看到服务器发出一个带有<code>FIN</code>标识的包后主机先返回了一个确认包，又连续的发出了一个带有<code>急迫</code>标识的包与一个带有<code>重置</code>标识的包，服务器返回了重置的包，连接重新建立。</p>
+<h3 id="UDP"><a href="#UDP" class="headerlink" title="UDP"></a>UDP</h3><p><strong>UDP是一种面向无连接的传输层协议，传输可靠性没有保证</strong><br>udp不提供重传记住，占用资源小，处理效率高<br><em>一些时延敏感的流量，如语音、视频、游戏等，通常使用udp作为传输层协议</em><br>eg：看视频卡顿，失真，玩游戏卡顿</p>
+<h3 id="总结对比"><a href="#总结对比" class="headerlink" title="总结对比"></a>总结对比</h3><table>
+<thead>
+<tr>
+<th>传输控制协议（TCP）</th>
+<th>用户数据协议（UDP）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>面向连接</td>
+<td>无连接</td>
+</tr>
+<tr>
+<td>可靠传输</td>
+<td>尽力而为的传输</td>
+</tr>
+<tr>
+<td>支持流控及窗口机制</td>
+<td>无流控及窗口机制</td>
+</tr>
+<tr>
+<td>HTTP、FTP等</td>
+<td>TFTP、DNS、DHCP等</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://eeeje.com/2019/10/28/tcp/" title="TCP/UDP" target="_blank" rel="external">https://eeeje.com/2019/10/28/tcp/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://eeeje.com" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://eeeje.com" target="_blank"><span class="text-dark">辣鸡熊</span><small class="ml-1x"></small></a></h3>
+        <div>博客基于hexo搭建，托管于Github，部分图片寄存于阿里oss</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2019/10/29/hexo/" title="linux中安装hexo编译博客"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2019/10/27/1027/" title="1027笔记"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/lajix" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/lajix" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/bearshili" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://oss.sadly.pw/images/wechat.jpg" target="_blank" title="Wechat" data-toggle=tooltip data-placement=top><i class="icon icon-wechat"></i></a></li>
+        
+        <li><a href="/mailto:admin@eeeji.com" target="_blank" title="Email" data-toggle=tooltip data-placement=top><i class="icon icon-email"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        &copy; 2019 辣鸡熊
+        
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'LjlF9WJs8aeGL4yTRFi5ttA3-gzGzoHsz',
+    appKey: 'kvtr07LLIscULJ5CEYKut64m',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
