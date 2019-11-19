@@ -21,16 +21,16 @@
   <meta name="description" content="ICMP英特网控制消息协议 在网络设备间传递各种差错和控制信息    甲：你听到了吗？（ICMP Echo Request） 乙：听到了！（ICMP Echo Reply）   ICMP中最重要的是类型（type）与代码（code）    类型 编码 描述    0 0 Echo Reply   3 0 网络不可达   3 1 主机不可达   3 2 协议不可达   3 3 端口不可达   5 0">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ICMP">
-<meta property="og:url" content="https:&#x2F;&#x2F;eeeje.com&#x2F;2019&#x2F;11&#x2F;18&#x2F;ICMP&#x2F;index.html">
+<meta property="og:url" content="https:&#x2F;&#x2F;eeeje.com&#x2F;2019&#x2F;11&#x2F;19&#x2F;ICMP&#x2F;index.html">
 <meta property="og:site_name" content="辣鸡熊个人博客">
 <meta property="og:description" content="ICMP英特网控制消息协议 在网络设备间传递各种差错和控制信息    甲：你听到了吗？（ICMP Echo Request） 乙：听到了！（ICMP Echo Reply）   ICMP中最重要的是类型（type）与代码（code）    类型 编码 描述    0 0 Echo Reply   3 0 网络不可达   3 1 主机不可达   3 2 协议不可达   3 3 端口不可达   5 0">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;20191118&#x2F;image-20191118104258247.png">
-<meta property="og:updated_time" content="2019-11-18T11:43:03.269Z">
+<meta property="og:updated_time" content="2019-11-19T07:55:10.333Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;oss.sadly.pw&#x2F;images&#x2F;R-S&#x2F;20191118&#x2F;image-20191118104258247.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="https://eeeje.com/2019/11/18/ICMP/index.html">
+  <link rel="canonical" href="https://eeeje.com/2019/11/19/ICMP/index.html">
   
     <link rel="alternate" href="/atom.xml" title="辣鸡熊个人博客" type="application/atom+xml">
   
@@ -266,10 +266,10 @@
                 
               </p>
               <p class="item-title">
-                <a href="/2019/11/18/ICMP/" class="title">ICMP</a>
+                <a href="/2019/11/19/ICMP/" class="title">ICMP</a>
               </p>
               <p class="item-date">
-                <time datetime="2019-11-18T11:43:03.272Z" itemprop="datePublished">2019-11-18</time>
+                <time datetime="2019-11-19T07:55:10.333Z" itemprop="datePublished">2019-11-19</time>
               </p>
             </div>
           </li>
@@ -362,8 +362,8 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2019/11/18/ICMP/" class="article-date">
-	  <time datetime="2019-11-18T11:43:03.272Z" itemprop="datePublished">2019-11-18</time>
+	<a href="/2019/11/19/ICMP/" class="article-date">
+	  <time datetime="2019-11-19T07:55:10.333Z" itemprop="datePublished">2019-11-19</time>
 	</a>
 </span>
         
@@ -378,7 +378,7 @@
 	</span>
 
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/11/18/ICMP/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/11/19/ICMP/#comments" class="article-comment-link">评论</a></span>
         
 	
 		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.1k(字)</span>
@@ -466,7 +466,8 @@
 <p>接下来的延迟都在0.3ms左右了</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# ping 192.168.1.1</span><br><span class="line">PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.</span><br><span class="line">64 bytes from 192.168.1.1: icmp_seq=1 ttl=64 time=1.39 ms</span><br><span class="line">From 192.168.123.1 icmp_seq=2 Redirect Host(New nexthop: 192.168.1.1)</span><br><span class="line">From 192.168.123.1: icmp_seq=2 Redirect Host(New nexthop: 192.168.1.1)</span><br><span class="line">64 bytes from 192.168.1.1: icmp_seq=2 ttl=64 time=0.402 ms</span><br><span class="line">64 bytes from 192.168.1.1: icmp_seq=3 ttl=64 time=0.371 ms</span><br><span class="line">64 bytes from 192.168.1.1: icmp_seq=4 ttl=64 time=0.319 ms</span><br><span class="line">64 bytes from 192.168.1.1: icmp_seq=5 ttl=64 time=0.303 ms</span><br><span class="line">64 bytes from 192.168.1.1: icmp_seq=6 ttl=64 time=0.346 ms</span><br><span class="line">^C</span><br><span class="line">--- 192.168.1.1 ping statistics ---</span><br><span class="line">6 packets transmitted, 6 received, +1 errors, 0% packet loss, time 5001ms</span><br><span class="line">rtt min/avg/max/mdev = 0.303/0.523/1.399/0.393 ms</span><br></pre></td></tr></table></figure>
 
-<h2 id="没有网关"><a href="#没有网关" class="headerlink" title="没有网关"></a>没有网关</h2>
+
+
       
     </div>
     <div class="article-footer">
@@ -475,7 +476,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="https://eeeje.com/2019/11/18/ICMP/" title="ICMP" target="_blank" rel="external">https://eeeje.com/2019/11/18/ICMP/</a>
+      <a href="https://eeeje.com/2019/11/19/ICMP/" title="ICMP" target="_blank" rel="external">https://eeeje.com/2019/11/19/ICMP/</a>
     </li>
     
     <li class="post-copyright-license">
