@@ -79,7 +79,7 @@ function browserRedirect() {
 var now = -1;
 var resLength = 0;
 var thisSearch = 'https://www.baidu.com/s?wd=';
-var thisSearchIcon = './main/logo.jpg';
+var thisSearchIcon = 'https://s3.ax1x.com/2021/01/22/s5A724.jpg';
 var storage = window.localStorage;
 if(!storage.stopHot){
     storage.stopHot = true
@@ -186,23 +186,23 @@ $(function(){
   var search = {
     data: [{
       name: '百度',
-      img: 'main/images/logo.jpg',
+      img: 'https://s3.ax1x.com/2021/01/22/s5A724.jpg',
       url: 'https://www.baidu.com/s?wd='
     }, {
       name: '谷歌',
-      img: 'main/images/logo_2.jpg',
+      img: 'https://s3.ax1x.com/2021/01/22/s5AHxJ.jpg',
       url: 'https://www.google.com/search?q='
     }, {
       name: '必应',
-      img: 'main/images/logo_3.jpg',
+      img: 'https://s3.ax1x.com/2021/01/22/s5AqM9.jpg',
       url: 'https://cn.bing.com/search?q='
     }, {
       name: '好搜',
-      img: 'main/images/logo_4.jpg',
+      img: 'https://s3.ax1x.com/2021/01/22/s5ATGF.jpg',
       url: 'https://www.so.com/s?q='
     }, {
       name: '搜狗',
-      img: 'main/images/logo_5.jpg',
+      img: 'https://s3.ax1x.com/2021/01/22/s5AOq1.jpg',
       url: 'https://www.sogou.com/web?query='
     }]
   }
